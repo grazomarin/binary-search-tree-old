@@ -23,6 +23,11 @@ class Tree {
     return [...new Set(array)];
   }
 
+  #smallestLeaf(root) {
+    if (root.left === null) return root;
+    return this.#smallestLeaf(root.left);
+  }
+
   buildTree(array = this.array) {
     if (array.length === 0) return null;
     const mid = Math.floor(array.length / 2);
@@ -48,22 +53,48 @@ class Tree {
     }
   }
 
-  insert(int, root = this.root) {
-    if (root.left === null && int < root.value) {
-      root.left = new Node(int);
+  insert(value, root = this.root) {
+    if (root.left === null && value < root.value) {
+      root.left = new Node(value);
       return;
     }
-    if (root.right === null && int > root.value) {
-      root.right = new Node(int);
+    if (root.right === null && value > root.value) {
+      root.right = new Node(value);
       return;
     }
-    if (root.value === int) throw new Error("there is already such value");
-    if (int < root.value) this.insert(int, root.left);
-    if (int > root.value) this.insert(int, root.right);
+    if (root.value === value) throw new Error("there is already such value");
+    if (value < root.value) this.insert(value, root.left);
+    if (value > root.value) this.insert(value, root.right);
+  }
+
+  delete(value, root = this.root) {
+    if (root === null) return null;
+    if (root.value === value) {
+      if (root.left === null && root.right === null) return null;
+      if (root.left === null && root.right !== null) return root.right;
+      if (root.left !== null && root.right === null) return root.left;
+      if (root.left !== null && root.right !== null) {
+        const replacement = this.#smallestLeaf(root.right);
+        this.delete(replacement.value, root);
+        root.value = replacement.value;
+        return root;
+      }
+    }
+
+    if (value < root.value) {
+      root.left = this.delete(value, root.left);
+      return root;
+    }
+    if (value > root.value) {
+      root.right = this.delete(value, root.right);
+      return root;
+    }
   }
 }
 
-const myTree = new Tree([2, 5, 3, 1, 7, 8, 7]);
-myTree.prettyPrint();
-myTree.insert(6);
-myTree.prettyPrint();
+const array = [];
+for (let i = 1; i <= 20; i++) {
+  array.push(i);
+}
+
+const myTree = new Tree(array);
