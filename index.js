@@ -90,11 +90,82 @@ class Tree {
       return root;
     }
   }
+
+  find(value, root = this.root) {
+    if (root === null) return null;
+    if (value === root.value) return root;
+    if (value < root.value) return this.find(value, root.left);
+    if (value > root.value) return this.find(value, root.right);
+  }
+
+  levelOrder(root = this.root) {
+    const queue = [root];
+    const result = [];
+
+    while (queue.length > 0) {
+      const current = queue.shift();
+      result.push(current.value);
+
+      if (current.left) queue.push(current.left);
+      if (current.right) queue.push(current.right);
+    }
+
+    return result;
+  }
+
+  preorder(root = this.root) {
+    if (!root) return [];
+
+    return [
+      root.value,
+      ...this.preorder(root.left),
+      ...this.preorder(root.right),
+    ];
+  }
+
+  inorder(root = this.root) {
+    if (!root) return [];
+
+    return [
+      ...this.inorder(root.left),
+      root.value,
+      ...this.inorder(root.right),
+    ];
+  }
+
+  postorder(root = this.root) {
+    if (!root) return [];
+
+    return [
+      ...this.postorder(root.left),
+      ...this.postorder(root.right),
+      root.value,
+    ];
+  }
+
+  height(root = this.root, h = 0) {
+    if (!root) return h;
+    h++;
+
+    const left = this.height(root.left, h);
+    const right = this.height(root.right, h);
+    return left > right ? left : right;
+  }
+
+  depth(value, root = this.root, d = 0) {
+    if (!root) return null;
+    d++;
+    if (value === root.value) return d;
+    if (value < root.value) return this.depth(value, root.left, d);
+    if (value > root.value) return this.depth(value, root.right, d);
+    return d;
+  }
 }
 
 const array = [];
-for (let i = 1; i <= 20; i++) {
+for (let i = 1; i <= 31; i++) {
   array.push(i);
 }
 
 const myTree = new Tree(array);
+myTree.prettyPrint();
