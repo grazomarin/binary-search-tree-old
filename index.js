@@ -160,6 +160,19 @@ class Tree {
     if (value > root.value) return this.depth(value, root.right, d);
     return d;
   }
+
+  isBalanced(root) {
+    if (!root) return false;
+    if (Math.abs(this.height(root.left) - this.height(root.right)) > 1) {
+      return false;
+    }
+
+    return true;
+  }
+
+  rebalance(root) {
+    return new Tree(this.inorder(root));
+  }
 }
 
 const array = [];
